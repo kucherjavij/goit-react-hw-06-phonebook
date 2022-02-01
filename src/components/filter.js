@@ -19,24 +19,13 @@ function Filter ({value, onChange}) {
 }
 
 Filter.propTypes={
-    value:  PropTypes.array,
+    value:  PropTypes.string,
     onChange: PropTypes.func
 }
- const filterContacts = (allContacts, filtered) => {
-   const normalizedFilter = filtered.toLowerCase()
-     
-     return allContacts.filter(contact =>
-     contact.name.toLowerCase().includes(normalizedFilter)
-   );
- };
-const mapStateToProps = (state) => {
-    const { filterReducer, contactReducer } = state.contacts
-    const visibleContact = filterContacts( contactReducer, filterReducer)
 
-    return {
-        value: visibleContact
-    }
-}
+const mapStateToProps = (state) => ({
+        value: state.contacts.filterReducer  
+})
 
 const mapDispatchToProps = dispatch => ({
   onChange: (e) => dispatch(contactsActions.changeFilter(e.target.value))
