@@ -2,14 +2,18 @@ import React, {useState} from "react";
 import PropTypes from "prop-types";
 import {Input} from "./input.styled"
 import {DeleteBtn } from "./contactList.styled"
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import contacActions from "../contacts/contacts-actions"
+import { getContacts } from "../contacts/contacts-selectors";
 
-function Form ({onSubmit}){
+
+export default function Form (){
    const [name, setName] = useState('');
-   const [number, setNumber] = useState('');
-   
-    
+    const [number, setNumber] = useState('');
+    const selector = useSelector(getContacts) 
+    const dispatch = useDispatch()
+
+
    const hendleInputChange = e => {
         const {name, value} = e.target
 
@@ -25,9 +29,15 @@ function Form ({onSubmit}){
         }
     
         const handleSubmit = e=> {
-            
             e.preventDefault();
-        onSubmit({name, number})  
+        const add = (names, number) => dispatch(contacActions.addContact(names, number))
+        const validator = name =>
+            selector.find(contact => contact.name === name);
+
+        validator(name)
+            ? alert(`${name} is already in contacts`)
+            : add({name, number});
+             
         setName('')
         setNumber('')
 
@@ -70,8 +80,7 @@ Form.propTypes={
     onSubmit:  PropTypes.func
 }
 
-const mapDispatchToProps = dispatch => ({
-    onSubmit: (names, number) => dispatch(contacActions.addContact(names, number))
-})
+// const mapDispatchToProps = dispatch => ({
+//     onSubmit: (names, number) => dispatch(contacActions.addContact(names, number))
+// })
 
-export default connect(null,mapDispatchToProps )(Form)
